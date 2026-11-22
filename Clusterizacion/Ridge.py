@@ -1,6 +1,6 @@
-# Lasso.py
+# Ridge.py
 # Examen Parcial II - Minería de Datos II
-# Análisis LASSO por cliente: selección L1 -> KMeans -> puntos + barras + radar
+# Análisis RIDGE por cliente: regresión L2 -> KMeans -> puntos + barras + radar
 
 import sys
 from pathlib import Path
@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import Ridge
 from sklearn.cluster import KMeans
 
 # El módulo de limpieza está en eda/, no junto a este archivo
@@ -49,10 +49,13 @@ def preparar_clientes(ruta=RUTA):
     return datos_est, datos_num
 
 
-class AnalisisLASSO:
-    nombre = "LASSO"
+class AnalisisRidge:
+    """Ajusta Ridge, agrupa a los clientes y dibuja los tres paneles."""
 
-    def __init__(self, datos_est, datos_num, n_clusters=3, alpha=0.01):
+    nombre = "Ridge"
+
+    def __init__(self, datos_est, datos_num, n_clusters=3, alpha=1.0):
+        """Guarda los datos y los parámetros; los resultados empiezan vacíos."""
         self.datos_est = datos_est
         self.datos_num = datos_num
         self.n_clusters = n_clusters
@@ -61,14 +64,19 @@ class AnalisisLASSO:
         self.centros = None   # promedio de cada variable por cluster
 
     def _reducir(self):
-        """Ajusta Lasso sobre Gasto y toma las 2 variables con mayor coeficiente."""
-        x = self.datos_est.drop(columns=["Gasto"])
-        y = self.datos_est["Gasto"]
-        modelo = Lasso(alpha=self.alpha, max_iter=10000).fit(x, y)
-        columnas = x.columns[np.argsort(np.abs(modelo.coef_))[-2:]][::-1]
+        """Ajusta Ridge sobre Gasto y toma las 2 variables con mayor coeficiente."""
+        # Gasto se excluye de las entradas para que el modelo no copie la respuesta
+        entradas = self.datos_est.drop(columns=["Gasto"])
+        objetivo = self.datos_est["Gasto"]
+
+        # La penalización L2 encoge los coeficientes sin llevarlos a cero
+        modelo = Ridge(alpha=self.alpha, max_iter=10000).fit(entradas, objetivo)
+        coeficientes = np.abs(modelo.coef_)
+        columnas = entradas.columns[np.argsort(coeficientes)[-2:]][::-1]
         return self.datos_est[columnas].to_numpy()
 
     def ajustar(self):
+        """Aplica KMeans sobre las 2 variables elegidas y calcula los promedios."""
         self.df = pd.DataFrame(
             self._reducir(), columns=["dim1", "dim2"], index=self.datos_est.index
         )
@@ -82,6 +90,7 @@ class AnalisisLASSO:
         return self
 
     def _scatter(self, ax):
+        """Dibuja un conjunto de puntos por cluster en el plano 2D."""
         for c in sorted(self.df["cluster"].unique()):
             sub = self.df[self.df["cluster"] == c]
             ax.scatter(sub["dim1"], sub["dim2"], label=f"Cluster {c}")
@@ -92,6 +101,7 @@ class AnalisisLASSO:
         ax.grid(True)
 
     def _barras(self, fig, subgs):
+        """Muestra los promedios reales de cada variable en un panel por cluster."""
         labels = self.datos_num.columns
         for i in range(self.n_clusters):
             ax = fig.add_subplot(subgs[0, i])
@@ -102,6 +112,7 @@ class AnalisisLASSO:
             ax.tick_params(labelsize=8)
 
     def _radar(self, ax):
+        """Compara los 8 perfiles en escala 0 a 100 dentro de un círculo."""
         labels = self.datos_num.columns
         centros = np.array([
             ((col - col.min()) / (col.max() - col.min()) * 100)
@@ -149,4 +160,4 @@ class AnalisisLASSO:
 if __name__ == "__main__":
     datos_est, datos_num = preparar_clientes()
     print(datos_num.shape)
-    AnalisisLASSO(datos_est, datos_num).graficar()
+    AnalisisRidge(datos_est, datos_num).graficar()
