@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Aplicación de técnicas de minería de datos y arquitectura de pipelines para el análisis de negocio</b><br>
-  Colegio Universitario de Cartago · Tecnologías de Información – Big Data · BD-162 · IIIC-2026
+  Colegio Universitario de Cartago · Big Data · BD-162 · IIIC-2026
 </p>
 
 <p align="center">
