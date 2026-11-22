@@ -4,7 +4,9 @@
  
 import time
 from pathlib import Path
- 
+from ui import estilos, encabezado, navegacion
+import clusterizacion
+import en_vivo
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
@@ -29,10 +31,10 @@ CONFIG = {
     "logo": "https://moria.aurens.com/organizations/497d3acf-35c0-4c90-8754-d5e71162119b/logos/3215d7-271.png",
     "csv": str(Path(__file__).parent / "processed" / "2mil_online_retail.csv"),
     "excel": str(Path(__file__).parent / "eda" / "Online Retail.xlsx"),
-    "examen": "Examen 2",
+    "examen": "Proyecto Final",
     "materia": "Minería de Datos II",
     "profesor": "Ronald Córdoba Vega",
-    "fecha_entrega": "10 de noviembre de 2026",
+    "fecha_entrega": "24 de noviembre de 2026",
     "integrantes": [
         "Johel Barquero Carvajal",
         "Sharon Obando Gómez",
@@ -53,7 +55,8 @@ FONDO = "#F4F6FA"
 COLORES = [ROJO, AZUL_OSCURO, DORADO, "#2A9D8F", "#6C757D"]
  
 # Configuración de la página (título, ícono y ancho)
-st.set_page_config(page_title="Examen 2 - Minería de Datos II", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Proyecto Final - Minería de Datos II", page_icon="📊",
+                   layout="wide", initial_sidebar_state="collapsed")
  
  
 # ---------------------------------------------------------------------
@@ -177,10 +180,8 @@ def pagina_inicio():
         """,
         unsafe_allow_html=True,
     )
-    st.write("")
-    st.info("👈 Usa el menú de la izquierda para recorrer CRISP-DM, el EDA y las reglas de asociación.")
- 
- 
+    
+
 # ---------------------------------------------------------------------
 # 6. PÁGINA: CRISP-DM (RESUMEN) ---------------------------------------
 # ---------------------------------------------------------------------
@@ -688,7 +689,8 @@ def pagina_reglas(nombre):
         pagina_eclat()
     else:
         pagina_fp_growth()
- 
+
+    en_vivo.panel(nombre, tabla_binaria(), CONFIG["csv"])   # <-- NUEVA LÍNEA
     comparar_algoritmos()
     st.caption("Datos: muestra de 2 000 filas del dataset Online Retail.")
  
@@ -696,40 +698,22 @@ def pagina_reglas(nombre):
 # ---------------------------------------------------------------------
 # 10. MENÚ LATERAL Y NAVEGACIÓN ----------------------------------------
 # ---------------------------------------------------------------------
+SECCIONES = ["🏠 Inicio", "🧭 CRISP-DM", "🔎 EDA", "🛒 Reglas de asociación", "🧬 Clusterización"]
+SUBMENUS = {"🛒 Reglas de asociación": ALGORITMOS, "🧬 Clusterización": clusterizacion.SUBMENUS}
+
 def main():
-    aplicar_estilos()
- 
-    with st.sidebar:
-        st.markdown(
-            f'<img src="{CONFIG["logo"]}" style="width:100%; border-radius:8px; background:white; padding:8px;">',
-            unsafe_allow_html=True,
-        )
-        st.markdown("---")
- 
-        seccion = st.radio(
-            "Menú",
-            ["🏠 Inicio", "🧭 CRISP-DM", "🔎 EDA", "🛒 Reglas de asociación"],
-            label_visibility="collapsed",
-        )
- 
-        # El submenú solo aparece cuando se elige Reglas de asociación
-        algoritmo = None
-        if seccion == "🛒 Reglas de asociación":
-            st.markdown("**Algoritmo**")
-            algoritmo = st.radio("Algoritmo", list(ALGORITMOS), label_visibility="collapsed")
- 
-        st.markdown("---")
-        st.markdown("<h2 style='text-align:center; color:#F2A900;'>2026</h2>", unsafe_allow_html=True)
- 
-    # Se muestra la página que corresponde a la selección
+    estilos()
+    encabezado(CONFIG["logo"], CONFIG["examen"], CONFIG["materia"])
+    seccion, sub = navegacion(SECCIONES, SUBMENUS)
     if seccion == "🏠 Inicio":
         pagina_inicio()
     elif seccion == "🧭 CRISP-DM":
         pagina_crisp()
     elif seccion == "🔎 EDA":
         pagina_eda()
+    elif seccion == "🛒 Reglas de asociación":
+        pagina_reglas(sub)
     else:
-        pagina_reglas(algoritmo)
- 
- 
+        clusterizacion.pagina(sub, CONFIG["csv"], tabla_binaria)
+
 main()
