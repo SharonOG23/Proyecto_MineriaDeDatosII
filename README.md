@@ -99,8 +99,14 @@ Proyecto_MineriaDeDatosII/
 │   ├── apriori.py
 │   ├── eclat.py
 │   └── fp_growth.py
-├── Clusterizacion/              # Scripts y notebooks de Lasso y Ridge
-├── reporte_final/               # Informes (notebook / HTML)
+├── Clusterizacion/  
+│   ├── acp_clientes.py
+│   ├── lasso.py
+│   └── Ridge.py
+│   ├── tsne_clientes.py
+│   ├── umap_clientes.py         # Scripts y notebooks de Lasso y Ridge
+├── reporte_final/  
+│   ├── reporte_final.ipynb      # Informes (notebook / HTML)
 ├── app.py                       # Aplicación Streamlit
 ├── ui.py                        # Estilos y navegación
 ├── clusterizacion.py            # Sección de clusterización de la app
@@ -127,13 +133,11 @@ pip install streamlit pandas plotly matplotlib mlxtend networkx openpyxl scikit-
 streamlit run app.py
 ```
 
-La app se abre en `http://localhost:8501`. La primera vez que se entra a **EDA** puede tardar uno o dos minutos mientras se limpia el Excel.
-
 ---
 
 ## 📦 Rúbrica
 
-**Fecha de entrega:** 24 de noviembre de 2026, antes de las 6:00 p. m. en el CUCVirtual. La defensa se realiza el mismo día.
+**Fecha de entrega:** 24 de noviembre de 2026.
 
 | Peso | Criterio | Entregable |
 |------|----------|------------|
@@ -149,11 +153,11 @@ La app se abre en `http://localhost:8501`. La primera vez que se entra a **EDA**
 
 | Integrante | Responsabilidad |
 |------------|-----------------|
-| Johel Josue Barquero Carvajal | Apriori |
-| Edward Steven Vindas Rivera | Limpieza y estadística |
-| Marisol Víquez Rivera | FP-Growth |
-| Fabián Brenes Loria | CRISP-DM (fases 1 y 2) |
-| Sharon Valeria Obando Gómez | Eclat |
+| Johel Josue Barquero Carvajal | Apriori - PCA |
+| Edward Steven Vindas Rivera | Limpieza y estadística - UMAP |
+| Marisol Víquez Rivera | FP-Growth - Clusterizacióm|
+| Fabián Brenes Loria | CRISP-DM (fases 1 y 2) - Ridge|
+| Sharon Valeria Obando Gómez | Eclat - t-SNE|
 
 **Profesor:** Ronald Córdoba Vega
 **Curso:** Minería de Datos II (BD-162) · IIIC-2026
