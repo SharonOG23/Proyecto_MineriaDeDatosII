@@ -5,7 +5,7 @@
 import time
 from pathlib import Path
 from ui import estilos, encabezado, navegacion
-import clusterizacion
+import seccion_clusterizacion 
 import en_vivo
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -699,7 +699,7 @@ def pagina_reglas(nombre):
 # 10. MENÚ LATERAL Y NAVEGACIÓN ----------------------------------------
 # ---------------------------------------------------------------------
 SECCIONES = ["🏠 Inicio", "🧭 CRISP-DM", "🔎 EDA", "🛒 Reglas de asociación", "🧬 Clusterización"]
-SUBMENUS = {"🛒 Reglas de asociación": ALGORITMOS, "🧬 Clusterización": clusterizacion.SUBMENUS}
+SUBMENUS = {"🛒 Reglas de asociación": ALGORITMOS, "🧬 Clusterización": seccion_clusterizacion.SUBMENUS}
 
 def main():
     estilos()
@@ -714,6 +714,6 @@ def main():
     elif seccion == "🛒 Reglas de asociación":
         pagina_reglas(sub)
     else:
-        clusterizacion.pagina(sub, CONFIG["csv"], tabla_binaria)
+        seccion_clusterizacion.pagina(sub, CONFIG["csv"])
 
 main()
