@@ -1,3 +1,9 @@
 /Clusterizacion/No_SubirAGit/
 
 /Clusterizacion/Lasso.py
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.idea/
